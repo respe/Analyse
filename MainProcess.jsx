@@ -1,104 +1,103 @@
-{
-	var palette = Palette(this);
-	var process;
+﻿/**  ----------------------------------------------------------------------------------------------------------------------------------------------------------
+*   FX Process
+*   params : fileList
+*/
 
-	/**  ----------------------------------------------------------------------------------------------------------------------------------------------------------
-    *   FX Process
-    *
-    */
-	function MainProcess()
-	{
-		var process;
-		var fileProcess;
-		var aepFile = app.project.file;
-
-		var outputpath = '//CSV_BACKUP/main_raid5/CSV/Squid/aep';
-		/* TEST */outputpath = '/C/vide'; 
-		var outputFolder = new Folder(outPutPath);
-
-		var jobFolder;
-		var partFolder;
-
-		var filesList = [];
-
-		var partLength = 180;
-		var stabWord = "Stabilisation";
-
-		var index = 0;
-		var numFiles = 0;
-		var currentFile;
-
-		var partIndex = 0;
-
-		// Public
-
-		process.getFileProcess = function(){
-			return fileProcess;
-		}
-
-		process.getPartProcess = function(){
-			return fileProcess.getPartProcess();
-		}
-
-        process.init = function()
-        {
-            if (!app.project) {
-                app.newProject();
-            }
-
-            if(app.isoLanguage == "en_US"){
-                process.stabWord = "Stabilization";
-            }
-        }
-
-        process.setPartIndex = function(value){
-        	partIndex = value;
-        }
-
-
-            
-        process.start = function(files){
-        	filesList = files;
-        	index = 0;
-        	numFiles = filesList.length;
-
-            var ext = getExtension(fileList[index].name);
-            if(ext == "aep"){
-                analyseSequence();
+            if(control.isCurrentFile){
+                process.start();
             }else{
-                processFile(files[index]);
+                process.start(palette.fileList);
             }
+            
+function MainProcess()
+{
+    var process = new Object();
+    var fileProcess;
+    var aepFile = app.project.file;
 
-        	startJob();
+    var outputPath = '//CSV_BACKUP/main_raid5/CSV/Squid/aep';
+/* TEST */outputPath = '/D/test'; 
+    var outputFolder = new Folder(outputPath);
+
+    var jobFolder;
+    var partFolder;
+
+    var filesList = [];
+
+    var partLength = 180;
+    var stabWord = "Stabilisation";
+
+    var index = 0;
+    var numFiles = 0;
+    var currentFile;
+
+    var partIndex = 0;
+
+    // Public
+
+    process.getFileProcess = function(){
+        return fileProcess;
+    }
+
+    process.getPartProcess = function(){
+        return fileProcess.getPartProcess();
+    }
+
+    process.init = function()
+    {
+        if (!app.project) {
+            app.newProject();
         }
 
-		process.nextFile = function(){
-        	index ++;
-        	startJob();
+        if(app.isoLanguage == "en_US"){
+            process.stabWord = "Stabilization";
+        }
+    }
+
+    process.setPartIndex = function(value){
+        partIndex = value;
+    }
+
+
+        
+    process.start = function(files){
+        filesList = files;
+        index = 0;
+        numFiles = filesList.length;
+
+        var ext = getExtension(filesList[index].name);
+        if(ext == "aep"){
+            analyseSequence();
+        }else{
+            processFile(files[index]);
         }
 
-        // Private
-        function startJob(){
-			currentFile = filesList[index];
-        	app.open(currentFile);
-        	startFile();
-        }
+        startJob();
+    }
 
-        function startFile(){
-            fileProcess = FileProcess(process);
-            fileProcess.setPartIndex(partIndex);
-            fileProcess.start();
-            palette.infoLabel = "process : "+filesList.length+" file(s) \n current :"+currentFile;
-        }
+    process.nextFile = function(){
+        index ++;
+        startJob();
+    }
 
-        function getExtension(filename){
-            var dot_index = filename.lastIndexOf('.');
-            return filename.substring(dot_index);
-        }
+    // Private
+    function startJob(){
+        currentFile = filesList[index];
+        app.open(currentFile);
+        startFile();
+    }
 
-		return process;
-	}
+    function startFile(){
+        fileProcess = FileProcess(process);
+        fileProcess.setPartIndex(partIndex);
+        fileProcess.start();
+        palette.infoLabel = "process : "+filesList.length+" file(s) \n current :"+currentFile;
+    }
 
+    function getExtension(filename){
+        var dot_index = filename.lastIndexOf('.');
+        return filename.substring(dot_index);
+    }
 
-
+    return process;
 }
