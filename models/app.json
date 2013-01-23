@@ -1,0 +1,7 @@
+var appData = { 
+				"importPath": "//CSV_BACKUP/main_raid5/CSV/Gopro",
+				"outputPath": "//CSV_BACKUP/main_raid5/CSV/Squid/aep",
+				"partFrameCount" : 5400,
+				"fileList": [],
+				"fileIndex": 0
+              };
