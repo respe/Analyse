@@ -1,0 +1,67 @@
+/**  ----------------------------------------------------------------------------------------------------------------------------------------------------------
+*   PALETTE CONTROLLER
+*   
+*   
+*/
+function PaletteController(palette)
+{
+    palette.partIndexInput.onChange = function()
+    {
+        model.setPartIndex(palette.partIndexInput.text);
+    }
+
+    palette.jobTypeList.onChange = function()
+    {
+        model.setJobType(palette.jobTypeList.selection)
+    }
+
+    palette.currentFileCb.onClick = function()
+    {
+        if(palette.currentFileCb.value == true){
+            palette.jobTypeList.enabled = false;
+            palette.folderInput.enabled = false;
+            palette.browsBtn.enabled = false;
+        }else{
+            palette.jobTypeList.enabled = true;
+            palette.folderInput.enabled = true;
+            palette.browsBtn.enabled = true;
+        }
+    }
+
+    palette.startBtn.onClick = function()
+    {
+        palette.startBtn.enabled = false;
+        mainController.runProcess();
+    }
+
+    palette.browseBtn.onClick = function()
+    {
+        if(palette.jobTypeList.selection == 0){
+            addFile(selectFile());
+        }else{
+            addFolder(selectFolder());
+        }
+    }
+
+    palette.showListBtn.onClick = function()
+    {
+        alert(model.getFileList());
+    }
+}
+
+
+
+    /**
+    * Function
+    *
+    */
+    function selectFolder(){
+        var inputFolder = new Folder(palette.DEFAULT_IMPORT_FOLDER);
+        inputFolder = inputFolder.selectDlg("Import items from folder...");
+        return inputFolder;
+    }
+
+    function selectFile(){
+        var file = File.openDialog("Select files", "*.mp4; *.aep", true);
+        return file;
+    }

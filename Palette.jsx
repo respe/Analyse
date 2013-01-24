@@ -1,7 +1,7 @@
 ﻿/**  ----------------------------------------------------------------------------------------------------------------------------------------------------------
 *   PALETTE
 *   
-*   Display graphic UI Control
+*   Display graphic UI
 */
 
 function Palette()
@@ -32,6 +32,4 @@ function Palette()
     palette.infoLabel   =       palette.add('statictext', undefined, "info : ");
 
     palette.show();
-
-    return palette;
 }
