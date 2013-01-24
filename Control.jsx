@@ -7,7 +7,7 @@
 function Control()
 {
 	var control = this;
-	var palette = new Palette(control);
+	var palette = Palette();
 	var model = new Model(palette);
 
 	var process;
@@ -39,12 +39,16 @@ function Control()
         }
     }
 
-    control.addFile(p)
+    function addFile(p)
     {
-    	var fileList;
-    	if(p == Folder) fileList = p.getFiles("*.mp4")
-        if(p == File) fileList = [p];
-    	model.setFileList(fileList);
+        model.setFileList(p);
+        updateFileList();
+    }
+
+    function addFolder(p)
+    {
+        model.setFileList(p.getFiles("*.mp4"));
+        updateFileList();
     }
 
     control.clearFiles()
@@ -52,9 +56,73 @@ function Control()
     	model.setFileList();
     }
 
-    control.setPartIndex(){
 
+
+   function updateFileList()
+    {
+        palette.folderInput.text = model.fileList.toString();
+        palette.fileCount.text = 'file count : '+model.fileList.length;
     }
+
+    /**
+    * Event Function
+    *
+    */
+    palette.partIndexInput.onChange = partIndexInputChange;
+    palette.jobTypeList.onChange = jobTypeChange;
+    palette.currentFileCb.onClick = selectCurrentFileCb;
+    palette.startBtn.onClick = runProcess;
+    palette.browseBtn.onClick = browse;
+    palette.showListBtn.onClick = showList;
+
+    function partIndexInputChange(){
+        model.setPartIndex(palette.partIndexInput.text);
+    }
+
+    function jobTypeChange(){
+        model.setJobType(palette.jobTypeList.selection)
+    }
+
+    function selectCurrentFileCb(){
+        if(palette.currentFileCb.value == true){
+            palette.jobTypeList.enabled = false;
+            palette.folderInput.enabled = false;
+            palette.browsBtn.enabled = false;
+        }else{
+            palette.jobTypeList.enabled = true;
+            palette.folderInput.enabled = true;
+            palette.browsBtn.enabled = true;
+        }
+    }
+
+    function browse(){
+        if(palette.jobTypeList.selection == 0){
+            addFile(selectFile());
+        }else{
+            addFolder(selectFolder());
+        }
+    }
+
+    function showList(){
+        alert(model.getFileList());
+    }
+
+
+    /**
+    * Function
+    *
+    */
+    function selectFolder(){
+        var inputFolder = new Folder(palette.DEFAULT_IMPORT_FOLDER);
+        inputFolder = inputFolder.selectDlg("Import items from folder...");
+        return inputFolder;
+    }
+
+    function selectFile(){
+        var file = File.openDialog("Select files", "*.mp4; *.aep", true);
+        return file;
+    }
+
 
 }
 
